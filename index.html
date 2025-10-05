@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Sınıf Zıt Anlamlı Kelimeler Etkinliği</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+        /* Yazdırma sırasında butonları ve gereksiz alanları gizle */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white;
+            }
+            .printable-area {
+                box-shadow: none !important;
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-lg printable-area">
+        
+        <!-- Başlık Bölümü -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">3. Sınıf Zıt Anlamlı Kelimeler Etkinliği</h1>
+            <p class="text-gray-600 mt-2 text-lg">Aşağıdaki kelimelerin zıt (karşıt) anlamlılarını karşılarındaki kutucuklara yazınız.</p>
+        </div>
+
+        <!-- Kelime Listesi -->
+        <div id="word-list" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+            <!-- Kelimeler JavaScript ile buraya eklenecek -->
+        </div>
+
+        <!-- Butonlar -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 no-print">
+            <button onclick="checkAnswers()" class="w-full sm:w-auto bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition-all duration-300 transform hover:scale-105">
+                Cevapları Kontrol Et
+            </button>
+            <button onclick="clearForm()" class="w-full sm:w-auto bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-all duration-300">
+                Temizle
+            </button>
+            <button onclick="window.print()" class="w-full sm:w-auto bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300">
+                Yazdır
+            </button>
+        </div>
+        
+        <div id="result-message" class="text-center mt-6 font-semibold text-xl"></div>
+
+    </div>
+
+    <script>
+        // Etkinlik için kelimeler ve doğru cevapları
+        const wordPairs = {
+            'Sıcak': 'Soğuk',
+            'Cesur': 'Korkak',
+            'Yeni': 'Eski',
+            'Ağır': 'Hafif',
+            'Güzel': 'Çirkin',
+            'Dolu': 'Boş',
+            'Doğru': 'Yanlış',
+            'Zengin': 'Fakir',
+            'Açık': 'Kapalı',
+            'Uzun': 'Kısa',
+            'Temiz': 'Kirli',
+            'İyi': 'Kötü'
+        };
+
+        const wordListContainer = document.getElementById('word-list');
+
+        // Sayfa yüklendiğinde kelimeleri ve input alanlarını oluştur
+        document.addEventListener('DOMContentLoaded', () => {
+            const colorPairs = [
+                { border: 'border-red-400', ring: 'focus:ring-red-500' },
+                { border: 'border-orange-400', ring: 'focus:ring-orange-500' },
+                { border: 'border-yellow-400', ring: 'focus:ring-yellow-500' },
+                { border: 'border-lime-400', ring: 'focus:ring-lime-500' },
+                { border: 'border-green-400', ring: 'focus:ring-green-500' },
+                { border: 'border-teal-400', ring: 'focus:ring-teal-500' },
+                { border: 'border-cyan-400', ring: 'focus:ring-cyan-500' },
+                { border: 'border-sky-400', ring: 'focus:ring-sky-500' },
+                { border: 'border-blue-400', ring: 'focus:ring-blue-500' },
+                { border: 'border-indigo-400', ring: 'focus:ring-indigo-500' },
+                { border: 'border-purple-400', ring: 'focus:ring-purple-500' },
+                { border: 'border-pink-400', ring: 'focus:ring-pink-500' }
+            ];
+
+            Object.keys(wordPairs).forEach((word, index) => {
+                const colors = colorPairs[index % colorPairs.length];
+                const wordElement = document.createElement('div');
+                wordElement.className = 'flex items-center gap-4 bg-gray-50 p-3 rounded-lg';
+                wordElement.innerHTML = `
+                    <label for="${word}" class="w-2/5 text-lg font-semibold text-gray-800">${word}:</label>
+                    <input type="text" id="${word}" data-original-border="${colors.border}" class="flex-grow p-2 border-2 ${colors.border} rounded-md focus:outline-none focus:ring-2 ${colors.ring} focus:border-transparent transition-all">
+                `;
+                wordListContainer.appendChild(wordElement);
+            });
+        });
+
+        // Cevapları kontrol etme fonksiyonu
+        function checkAnswers() {
+            let correctCount = 0;
+            const totalCount = Object.keys(wordPairs).length;
+            const resultMessage = document.getElementById('result-message');
+
+            Object.entries(wordPairs).forEach(([word, correctAnswer]) => {
+                const inputElement = document.getElementById(word);
+                const originalBorder = inputElement.dataset.originalBorder;
+                const userAnswer = inputElement.value.trim();
+
+                // Türkçe karakterleri de dikkate alarak büyük/küçük harf duyarsız karşılaştırma
+                const isCorrect = userAnswer.toLocaleLowerCase('tr-TR') === correctAnswer.toLocaleLowerCase('tr-TR');
+
+                if (isCorrect) {
+                    inputElement.classList.remove('border-red-500', originalBorder);
+                    inputElement.classList.add('border-green-500');
+                    correctCount++;
+                } else {
+                    inputElement.classList.remove('border-green-500', originalBorder);
+                    inputElement.classList.add('border-red-500');
+                }
+            });
+            
+            if(correctCount === totalCount) {
+                resultMessage.textContent = `Harika! Hepsi doğru! 🎉 (${correctCount}/${totalCount})`;
+                resultMessage.className = 'text-center mt-6 font-semibold text-xl text-green-600';
+            } else {
+                resultMessage.textContent = `Tekrar dene! ${correctCount} doğru, ${totalCount - correctCount} yanlış.`;
+                resultMessage.className = 'text-center mt-6 font-semibold text-xl text-red-600';
+            }
+        }
+
+        // Formu temizleme fonksiyonu
+        function clearForm() {
+            Object.keys(wordPairs).forEach(word => {
+                const inputElement = document.getElementById(word);
+                const originalBorder = inputElement.dataset.originalBorder;
+                inputElement.value = '';
+                inputElement.classList.remove('border-red-500', 'border-green-500');
+                inputElement.classList.add(originalBorder);
+            });
+            document.getElementById('result-message').textContent = '';
+        }
+    </script>
+</body>
+</html>
+
