@@ -24,7 +24,7 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 50px; 
+            left: 40px; /* Mobil için biraz daha daraltıldı */
             bottom: 0;
             width: 2px;
             background-color: #fca5a5; /* Soluk kırmızı */
@@ -51,15 +51,15 @@
         }
     </style>
 </head>
-<body class="bg-amber-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-amber-100 flex items-center justify-center min-h-screen p-2 sm:p-4">
 
     <div class="w-full max-w-4xl bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-lg printable-area notebook-paper">
         
         <!-- Başlık Bölümü (Kırmızı çizginin sağında kalması için içeriği ayrı bir div'e aldık) -->
-        <div class="relative pl-20 pr-6">
+        <div class="relative pl-16 pr-2 sm:pr-6">
             <div class="text-center mb-8">
-                <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">3. Sınıf Zıt Anlamlı Kelimeler Etkinliği</h1>
-                <p class="text-gray-600 mt-2 text-lg">Aşağıdaki kelimelerin zıt (karşıt) anlamlılarını karşılarındaki kutucuklara yazınız.</p>
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-sky-700">3. Sınıf Zıt Anlamlı Kelimeler Etkinliği</h1>
+                <p class="text-gray-600 mt-2 text-base sm:text-lg">Aşağıdaki kelimelerin zıt (karşıt) anlamlılarını karşılarındaki kutucuklara yazınız.</p>
             </div>
 
             <!-- Kelime Listesi -->
@@ -127,9 +127,9 @@
                 const colors = colorPairs[index % colorPairs.length];
                 const wordElement = document.createElement('div');
                 // Her bir kelime satırının altına defter çizgisi ekliyoruz
-                wordElement.className = 'flex items-center gap-4 py-2 word-item border-b-2 border-sky-100';
+                wordElement.className = 'flex items-center gap-2 sm:gap-4 py-2 word-item border-b-2 border-sky-100';
                 wordElement.innerHTML = `
-                    <label for="${word}" class="w-2/5 text-lg font-semibold text-gray-800">${word}:</label>
+                    <label for="${word}" class="w-2/5 text-base sm:text-lg font-semibold text-gray-800">${word}:</label>
                     <input type="text" id="${word}" data-original-border="${colors.border}" class="flex-grow p-2 border-2 ${colors.border} rounded-md focus:outline-none focus:ring-2 ${colors.ring} focus:border-transparent transition-all">
                 `;
                 wordListContainer.appendChild(wordElement);
@@ -183,4 +183,5 @@
     </script>
 </body>
 </html>
+
 
