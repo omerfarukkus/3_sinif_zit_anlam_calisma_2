@@ -10,55 +10,83 @@
         body {
             font-family: 'Quicksand', sans-serif;
         }
+        
+        .notebook-paper {
+            background-color: #fefcf3; /* Krem rengi defter kağıdı */
+            position: relative;
+            overflow: hidden;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        /* Defterin solundaki kırmızı dikey çizgi */
+        .notebook-paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50px; 
+            bottom: 0;
+            width: 2px;
+            background-color: #fca5a5; /* Soluk kırmızı */
+        }
+
         /* Yazdırma sırasında butonları ve gereksiz alanları gizle */
         @media print {
             .no-print {
                 display: none !important;
             }
             body {
-                background-color: white;
+                background-color: white !important;
             }
             .printable-area {
                 box-shadow: none !important;
                 border: 1px solid #ccc;
             }
+            .notebook-paper::before {
+                background-color: #fca5a5 !important;
+            }
+            .word-item {
+                border-bottom-color: #bae6fd !important;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-amber-100 flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-4xl bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-lg printable-area">
+    <div class="w-full max-w-4xl bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-lg printable-area notebook-paper">
         
-        <!-- Başlık Bölümü -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">3. Sınıf Zıt Anlamlı Kelimeler Etkinliği</h1>
-            <p class="text-gray-600 mt-2 text-lg">Aşağıdaki kelimelerin zıt (karşıt) anlamlılarını karşılarındaki kutucuklara yazınız.</p>
-        </div>
+        <!-- Başlık Bölümü (Kırmızı çizginin sağında kalması için içeriği ayrı bir div'e aldık) -->
+        <div class="relative pl-20 pr-6">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">3. Sınıf Zıt Anlamlı Kelimeler Etkinliği</h1>
+                <p class="text-gray-600 mt-2 text-lg">Aşağıdaki kelimelerin zıt (karşıt) anlamlılarını karşılarındaki kutucuklara yazınız.</p>
+            </div>
 
-        <!-- Kelime Listesi -->
-        <div id="word-list" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
-            <!-- Kelimeler JavaScript ile buraya eklenecek -->
-        </div>
+            <!-- Kelime Listesi -->
+            <div id="word-list" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 mb-8">
+                <!-- Kelimeler JavaScript ile buraya eklenecek -->
+            </div>
 
-        <!-- Butonlar -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 no-print">
-            <button onclick="checkAnswers()" class="w-full sm:w-auto bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition-all duration-300 transform hover:scale-105">
-                Cevapları Kontrol Et
-            </button>
-            <button onclick="clearForm()" class="w-full sm:w-auto bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-all duration-300">
-                Temizle
-            </button>
-            <button onclick="window.print()" class="w-full sm:w-auto bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300">
-                Yazdır
-            </button>
+            <!-- Butonlar -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 no-print">
+                <button onclick="checkAnswers()" class="w-full sm:w-auto bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition-all duration-300 transform hover:scale-105">
+                    Cevapları Kontrol Et
+                </button>
+                <button onclick="clearForm()" class="w-full sm:w-auto bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-all duration-300">
+                    Temizle
+                </button>
+                <button onclick="window.print()" class="w-full sm:w-auto bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300">
+                    Yazdır
+                </button>
+            </div>
+            
+            <div id="result-message" class="text-center mt-6 font-semibold text-xl"></div>
         </div>
-        
-        <div id="result-message" class="text-center mt-6 font-semibold text-xl"></div>
 
     </div>
 
     <script>
-        // Etkinlik için kelimeler ve doğru cevapları
+        // Etkinlik için kelimeler ve doğru cevapları (2 yeni kelime eklendi)
         const wordPairs = {
             'Sıcak': 'Soğuk',
             'Cesur': 'Korkak',
@@ -71,7 +99,9 @@
             'Açık': 'Kapalı',
             'Uzun': 'Kısa',
             'Temiz': 'Kirli',
-            'İyi': 'Kötü'
+            'İyi': 'Kötü',
+            'Savaş': 'Barış',
+            'Taze': 'Bayat'
         };
 
         const wordListContainer = document.getElementById('word-list');
@@ -96,7 +126,8 @@
             Object.keys(wordPairs).forEach((word, index) => {
                 const colors = colorPairs[index % colorPairs.length];
                 const wordElement = document.createElement('div');
-                wordElement.className = 'flex items-center gap-4 bg-gray-50 p-3 rounded-lg';
+                // Her bir kelime satırının altına defter çizgisi ekliyoruz
+                wordElement.className = 'flex items-center gap-4 py-2 word-item border-b-2 border-sky-100';
                 wordElement.innerHTML = `
                     <label for="${word}" class="w-2/5 text-lg font-semibold text-gray-800">${word}:</label>
                     <input type="text" id="${word}" data-original-border="${colors.border}" class="flex-grow p-2 border-2 ${colors.border} rounded-md focus:outline-none focus:ring-2 ${colors.ring} focus:border-transparent transition-all">
